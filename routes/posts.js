@@ -17,15 +17,14 @@ router.get('/', (req, res) => {
         .json(isNaN(limit) ? posts : posts.slice(0, limit))
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
     const id = parseInt(req.params.id)
     const post = posts.find(p => p.id === id)
 
     if (!post) {
-        return res
-            .status(404)
-            .json({ message: `no post with id ${id}` })
-
+        const err = new Error(`no post with id ${id}`)
+        err.status = 404
+        return next(err)
     }
 
     return res
@@ -33,7 +32,7 @@ router.get('/:id', (req, res) => {
         .json({ post })
 })
 
-router.post('/', (req, res) => {
+router.post('/', (req, res, next) => {
     console.log(req.body)
     const newPost = {
         id: req.body.title.length * 10 + 2,
@@ -41,9 +40,9 @@ router.post('/', (req, res) => {
     }
 
     if (!newPost.title) {
-        return res
-            .status(400)
-            .json({ message: "please include title" })
+        const err = new Error("please include title" )
+        err.status = 400
+        return next(err)
     }
 
     posts.push(newPost)
@@ -53,14 +52,14 @@ router.post('/', (req, res) => {
         .json(posts)
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:id', (req, res, next) => {
     const id = parseInt(req.params.id)
     const post = posts.find(p => p.id === id)
 
     if (!post) {
-        return res
-            .status(404)
-            .json({ message: `no post with id ${id}` })
+        const err = new Error(`no post with id ${id}`)
+        err.status = 404
+        return next(err)
     }
 
     post.title = req.body.title
