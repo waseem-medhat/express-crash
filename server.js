@@ -12,5 +12,7 @@ const app = express()
 // const currentDir = path.dirname(fileURLToPath(import.meta.url))
 // app.use(express.static(path.join(currentDir, "public")))
 
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 app.use('/api/posts', postsRouter)
 app.listen(port, () => console.log(`Server is running on port ${port}`))
